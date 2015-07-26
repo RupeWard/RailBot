@@ -9,14 +9,28 @@ public class PulseGenerator : MonoBehaviour
 	public GameObject pulseHolder;
 	public Transform pulseStartPosition;
 
+	public AudioClip pulseGenSound;
+
+
+#endregion Inspector hooks
+
+#region public settings
+
 	public float frequencyHz = 2f;
+
+	public bool doPulseGenSound = true;
 
 	public bool useGravity = false;
 	public Vector3 pulseVelocity = Vector3.left;
 	public float pulseSpeed = 1f;
 
+#endregion public settings
+	
+#region private hooks
 
-#endregion Inspector hooks
+	private AudioSource audioSource_;
+
+#endregion private hooks
 
 #region private data
 
@@ -32,6 +46,19 @@ public class PulseGenerator : MonoBehaviour
 	{
 		pulseVelocity = pulseVelocity / pulseVelocity.magnitude;
 		pulseVelocity *= pulseSpeed;
+
+		audioSource_ = GetComponent< AudioSource >();
+		if (audioSource_ != null )
+		{
+			if (pulseGenSound != null)
+			{
+				audioSource_.clip = pulseGenSound;
+			}
+		}
+		else
+		{
+			doPulseGenSound = false;
+		}
 	}
 
 #endregion SetUp
@@ -65,6 +92,14 @@ public class PulseGenerator : MonoBehaviour
 		Pulse newPulse = newPulseGO.GetComponent< Pulse >();
 		newPulse.Init(pulseVelocity, useGravity);
 
+		if (doPulseGenSound)
+		{
+			if (audioSource_.isPlaying)
+			{
+				audioSource_.Stop();
+			}
+			audioSource_.Play();
+		}
 	}
 			
 #endregion Pulse
