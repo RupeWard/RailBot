@@ -16,12 +16,6 @@ public class HidingPanel : MonoBehaviour
 
 #endregion inspector hooks
 
-#region private hooks
-
-	private RectTransform rectTransform_;
-
-#endregion private hooks
-
 #region public settings
 
 	public bool startHidden = false;
@@ -135,15 +129,15 @@ public class HidingPanel : MonoBehaviour
 		if (!immediate)
 		{
 			float elapsed = 0f;
-			Vector3 start = rectTransform_.position;
+			Vector3 start = hiddenArea.position;
 			while (elapsed < duration)
 			{
-				rectTransform_.position = Vector3.Lerp( start, hiddenPosition_, elapsed/duration );
+				hiddenArea.position = Vector3.Lerp( start, hiddenPosition_, elapsed/duration );
 				elapsed += Time.deltaTime;
 				yield return null;
 			}
 		}
-		rectTransform_.position = hiddenPosition_;
+		hiddenArea.position = hiddenPosition_;
 
 		isHidden_ = true;
 		isMoving_ = false;
@@ -168,15 +162,15 @@ public class HidingPanel : MonoBehaviour
 		if (!immediate)
 		{
 			float elapsed = 0f;
-			Vector3 start = rectTransform_.position;
+			Vector3 start = hiddenArea.position;
 			while (elapsed < duration)
 			{
-				rectTransform_.position = Vector3.Lerp( start, visiblePosition_, elapsed/duration );
+				hiddenArea.position = Vector3.Lerp( start, visiblePosition_, elapsed/duration );
 				elapsed += Time.deltaTime;
 				yield return null;
 			}
 		}
-		rectTransform_.position = visiblePosition_;
+		hiddenArea.position = visiblePosition_;
 
 		isHidden_ = false;
 		isMoving_ = false;
@@ -195,7 +189,6 @@ public class HidingPanel : MonoBehaviour
 
 	void Awake()
 	{
-		rectTransform_ = GetComponent< RectTransform >();
 	}
 
 	void Start () 
