@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [RequireComponent (typeof(Rigidbody))]
 [RequireComponent (typeof(MeshRenderer))]
@@ -10,6 +11,7 @@ public class Pulse : MonoBehaviour
 #region inspector hooks
 
 	public MeshRenderer meshRenderer;
+	public PulseGenerator pulseGenerator;
 
 #endregion inspector hooks
 
@@ -24,6 +26,7 @@ public class Pulse : MonoBehaviour
 #region private Hooks
 
 	private Rigidbody rigidbody_;
+	private HashSet < GameObject > ignoreColliders_ = new HashSet<GameObject>();
 
 #endregion private Hooks
 
@@ -33,7 +36,7 @@ public class Pulse : MonoBehaviour
 	private float lifetime_ = 0f;
 
 #endregion private data
-
+	
 #region SetUp
 
 	public void Init(Vector3 pVelocity, bool pUseGravity, Material material)
@@ -50,7 +53,12 @@ public class Pulse : MonoBehaviour
 			meshRenderer.sharedMaterial = material;
 		}
 	}
-	
+
+	public void AddIgnoreCollider(GameObject c)
+	{
+		ignoreColliders_.Add(c);
+	}
+
 	void Awake()
 	{
 		rigidbody_ = GetComponent< Rigidbody >();
@@ -79,4 +87,13 @@ public class Pulse : MonoBehaviour
 
 #endregion Flow
 
+	public bool ShouldIgnoreCollider(GameObject g)
+	{
+		bool result = false;
+		if (ignoreColliders_.Count > 0 && ignoreColliders_.Contains(g))
+		{
+			result=true;
+		}
+		return result;
+	}
 }

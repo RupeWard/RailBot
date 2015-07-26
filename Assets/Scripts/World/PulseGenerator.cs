@@ -3,6 +3,8 @@ using System.Collections;
 
 public class PulseGenerator : MonoBehaviour 
 {
+	static private readonly bool DEBUG_LOCAL = true;
+
 #region Inspector hooks
 
 	public GameObject pulseTemplate;
@@ -69,11 +71,14 @@ public class PulseGenerator : MonoBehaviour
 
 	public void Update()
 	{
-		timeTillPulse_ -= Time.deltaTime;
-		if (timeTillPulse_ <= 0f)
+		if (frequencyHz > 0)
 		{
-			CreatePulse();
-			timeTillPulse_ = 1f / frequencyHz;
+			timeTillPulse_ -= Time.deltaTime;
+			if (timeTillPulse_ <= 0f)
+			{
+				CreatePulse();
+				timeTillPulse_ = 1f / frequencyHz;
+			}
 		}
 	}
 
@@ -81,10 +86,11 @@ public class PulseGenerator : MonoBehaviour
 
 #region Pulse
 	
-	private void CreatePulse()
+	public Pulse CreatePulse()
 	{
 		GameObject newPulseGO = Instantiate(pulseTemplate) as GameObject;
-		newPulseGO.name = "Pulse_" + nextPulseNumber_.ToString();
+		string newPulseName = "P_" + nextPulseNumber_.ToString();
+		newPulseGO.name = newPulseName;
 		newPulseGO.transform.parent = pulseHolder.transform;
 		newPulseGO.transform.position = pulseStartPosition.position;
 		newPulseGO.transform.localScale = Vector3.one;
@@ -105,6 +111,13 @@ public class PulseGenerator : MonoBehaviour
 			}
 			audioSource_.Play();
 		}
+
+		if (DEBUG_LOCAL)
+		{
+			Debug.Log("Created pulse "+newPulseName);
+		}
+
+		return newPulse;
 	}
 			
 #endregion Pulse

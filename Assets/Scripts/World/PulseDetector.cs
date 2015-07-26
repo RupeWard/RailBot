@@ -1,12 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[RequireComponent (typeof(Collider))]
 public class PulseDetector : MonoBehaviour 
 {
 	static private readonly bool DEBUG_LOCAL = true;
 
 #region inspector hooks
 
+	public PulseGenerator pulseGenerator;
 
 #endregion inspector hooks
 
@@ -16,35 +18,67 @@ public class PulseDetector : MonoBehaviour
 	public Color pulseColour = Color.red;
 
 	public int killsPulseFrequency = 0;
+	public int pulseActionFrequency = 0;
 
 #endregion public settings
 
 #region private hooks
 
+	private Collider collider_ = null;
 
 #endregion private hooks
 
 #region private data
 
 	private int pulsesSinceKill = 0;
+	private int pulsesSinceAction = 0;
 
 #endregion private data
+
+#region SetUp
+
+	public void Awake()
+	{
+		collider_ = GetComponent< Collider >();
+	}
+
+#endregion SetUp
 
 #region Unity event handler
 
 	public void OnTriggerEnter(Collider other)
 	{
-		if (DEBUG_LOCAL)
+		Pulse pulse = other.GetComponent< Pulse >();
+		if (pulse != null)
 		{
-			Debug.Log(other.gameObject.name+" triggered "+this.gameObject.name);
-		}
-		if (killsPulseFrequency > 0)
-		{
-			pulsesSinceKill++;
-			if (pulsesSinceKill >= killsPulseFrequency)
+			if (!pulse.ShouldIgnoreCollider(this.gameObject))
 			{
-				GameObject.Destroy(other.gameObject);
-				pulsesSinceKill = 0;
+				if (DEBUG_LOCAL)
+				{
+					Debug.Log(other.gameObject.name+" triggered "+this.gameObject.name);
+				}
+				if (killsPulseFrequency > 0)
+				{
+					pulsesSinceKill++;
+					if (pulsesSinceKill >= killsPulseFrequency)
+					{
+						GameObject.Destroy(other.gameObject);
+						pulsesSinceKill = 0;
+					}
+				}
+				if (pulseActionFrequency > 0)
+				{
+					pulsesSinceAction++;
+					if (pulsesSinceAction >= pulseActionFrequency)
+					{
+						if (pulseGenerator != null)
+						{
+							Pulse p = pulseGenerator.CreatePulse();
+							p.AddIgnoreCollider(this.gameObject);
+						}
+						pulsesSinceAction = 0;
+					}
+				}
 			}
 		}
 	}
