@@ -129,6 +129,9 @@ public class HidingPanel : MonoBehaviour
 			preHideAction();
 		}
 
+		hideButtonObject.SetActive(false);
+		showButtonObject.SetActive(true);
+		
 		if (!immediate)
 		{
 			float elapsed = 0f;
@@ -141,9 +144,6 @@ public class HidingPanel : MonoBehaviour
 			}
 		}
 		rectTransform_.position = hiddenPosition_;
-
-		hideButtonObject.SetActive(false);
-		showButtonObject.SetActive(true);
 
 		isHidden_ = true;
 		isMoving_ = false;
@@ -162,6 +162,9 @@ public class HidingPanel : MonoBehaviour
 			preShowAction();
 		}
 
+		hideButtonObject.SetActive(true);
+		showButtonObject.SetActive(false);
+		
 		if (!immediate)
 		{
 			float elapsed = 0f;
@@ -174,9 +177,6 @@ public class HidingPanel : MonoBehaviour
 			}
 		}
 		rectTransform_.position = visiblePosition_;
-
-		hideButtonObject.SetActive(true);
-		showButtonObject.SetActive(false);
 
 		isHidden_ = false;
 		isMoving_ = false;
