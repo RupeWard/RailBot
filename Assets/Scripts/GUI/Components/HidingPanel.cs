@@ -48,9 +48,15 @@ public class HidingPanel : MonoBehaviour
 	private float hiddenDistance_;
 
 	private bool isMoving_ = false;
+	public bool IsMoving
+	{
+		get { return isMoving_; }
+	}
 
 	private Vector3 visiblePosition_ = Vector3.zero;
 	private Vector3 hiddenPosition_ = Vector3.zero;
+
+	private Coroutine movingCoroutine_ = null;
 
 #endregion private data
 
@@ -88,26 +94,20 @@ public class HidingPanel : MonoBehaviour
 
 	private void HandleHideHelper(bool immediate)
 	{
-		if (isMoving_)
+		if (movingCoroutine_ != null)
 		{
-			Debug.LogWarning("HandleHide called on " + gameObject.name + " when already moving");
+			StopCoroutine(movingCoroutine_);
 		}
-		else
-		{
-			StartCoroutine(HideCR(immediate));
-		}
+		movingCoroutine_ = StartCoroutine(HideCR(immediate));
 	}
 
 	private void HandleShowHelper(bool immediate)
 	{
-		if (isMoving_)
+		if (movingCoroutine_ != null)
 		{
-			Debug.LogWarning("HandleShow called on " + gameObject.name + " when already moving");
+			StopCoroutine(movingCoroutine_);
 		}
-		else
-		{
-			StartCoroutine(ShowCR(immediate));
-		}
+		movingCoroutine_ = StartCoroutine(ShowCR(immediate));
 	}
 
 #endregion Event handlers
