@@ -27,7 +27,7 @@ public class Pulse : MonoBehaviour
 		gameObject.SetActive(true);
 
 		velocity = pVelocity;
-		useGravity = false;
+		useGravity = pUseGravity;
 		rigidbody_.useGravity = useGravity;
 		rigidbody_.velocity = velocity;
 	}
@@ -47,7 +47,6 @@ public class Pulse : MonoBehaviour
 
 	void FixedUpdate () 
 	{
-//		transform.localPosition = transform.localPosition + velocity * Time.fixedDeltaTime;
 	}
 
 #endregion Flow
