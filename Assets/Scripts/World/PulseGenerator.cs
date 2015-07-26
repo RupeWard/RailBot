@@ -11,6 +11,8 @@ public class PulseGenerator : MonoBehaviour
 
 	public AudioClip pulseGenSound;
 
+	public Color pulseColour = Color.magenta;
+	public Material pulseMaterial;
 
 #endregion Inspector hooks
 
@@ -90,7 +92,10 @@ public class PulseGenerator : MonoBehaviour
 		nextPulseNumber_++;
 
 		Pulse newPulse = newPulseGO.GetComponent< Pulse >();
-		newPulse.Init(pulseVelocity, useGravity);
+
+		Material newMaterial = new Material(pulseMaterial);
+		newMaterial.SetColor("_Color", pulseColour);
+		newPulse.Init(pulseVelocity, useGravity, newMaterial);
 
 		if (doPulseGenSound)
 		{
