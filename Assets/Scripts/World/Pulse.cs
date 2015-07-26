@@ -47,7 +47,7 @@ public class Pulse : MonoBehaviour
 
 	void FixedUpdate () 
 	{
-		transform.localPosition = transform.localPosition + velocity * Time.fixedDeltaTime;
+//		transform.localPosition = transform.localPosition + velocity * Time.fixedDeltaTime;
 	}
 
 #endregion Flow
