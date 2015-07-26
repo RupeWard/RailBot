@@ -73,7 +73,7 @@ public class PulseDetector : MonoBehaviour
 					{
 						if (pulseGenerator != null)
 						{
-							Pulse p = pulseGenerator.CreatePulse();
+							Pulse p = pulseGenerator.GetPulse();
 							p.AddIgnoreCollider(this.gameObject);
 						}
 						pulsesSinceAction = 0;

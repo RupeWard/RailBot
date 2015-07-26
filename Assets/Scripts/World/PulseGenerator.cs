@@ -20,16 +20,23 @@ public class PulseGenerator : MonoBehaviour
 
 #region public settings
 
-	public float frequencyHz = 2f;
-
 	public bool doPulseGenSound = true;
 
 	public bool useGravity = false;
 	public Vector3 pulseVelocity = Vector3.left;
 	public float pulseSpeed = 1f;
 
+	public bool getTempoFromManager = false;
+
 #endregion public settings
-	
+
+	private float frequencyHz_ = 0f;
+
+	public void SetFrequencyHz( float frequency )
+	{
+		frequencyHz_ = frequency;
+	}
+
 #region private hooks
 
 	private AudioSource audioSource_;
@@ -38,7 +45,7 @@ public class PulseGenerator : MonoBehaviour
 
 #region private data
 
-	private float timeTillPulse_ = 0f;
+//	private float timeTillPulse_ = 0f;
 
 	private uint nextPulseNumber_ = 0u;
 
@@ -65,28 +72,30 @@ public class PulseGenerator : MonoBehaviour
 		}
 	}
 
-#endregion SetUp
-
-#region Flow
-
-	public void Update()
+	public void Start()
 	{
-		if (frequencyHz > 0)
+		if (getTempoFromManager)
 		{
-			timeTillPulse_ -= Time.deltaTime;
-			if (timeTillPulse_ <= 0f)
-			{
-				CreatePulse();
-				timeTillPulse_ = 1f / frequencyHz;
-			}
+			SetFrequencyHz(TempoManager.Instance.BeatFrequency);
+			TempoManager.Instance.beatFrequencyChangedAction += SetFrequencyHz;
+			TempoManager.Instance.onBeatAction += CreatePulse;
 		}
 	}
 
+#endregion SetUp
+
+#region Flow
+	
 #endregion Flow
 
 #region Pulse
-	
-	public Pulse CreatePulse()
+
+	public void CreatePulse()
+	{
+		GetPulse();
+	}
+
+	public Pulse GetPulse()
 	{
 		GameObject newPulseGO = Instantiate(pulseTemplate) as GameObject;
 		string newPulseName = "P_" + nextPulseNumber_.ToString();
