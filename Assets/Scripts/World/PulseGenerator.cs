@@ -3,7 +3,8 @@ using System.Collections;
 
 public class PulseGenerator : MonoBehaviour 
 {
-	static private readonly bool DEBUG_LOCAL = true;
+//	static private readonly bool DEBUG_LOCAL = true;
+	static private readonly bool DEBUG_GEN = false;
 
 #region Inspector hooks
 
@@ -15,6 +16,8 @@ public class PulseGenerator : MonoBehaviour
 
 	public Color pulseColour = Color.magenta;
 	public Material pulseMaterial;
+
+	public Avatar avatar;
 
 #endregion Inspector hooks
 
@@ -74,6 +77,10 @@ public class PulseGenerator : MonoBehaviour
 
 	public void Start()
 	{
+		if (avatar != null)
+		{
+			avatar.onClickedAction += OnClickedHandler;
+		}
 		if (getTempoFromManager)
 		{
 			SetFrequencyHz(TempoManager.Instance.BeatFrequency);
@@ -119,9 +126,10 @@ public class PulseGenerator : MonoBehaviour
 				audioSource_.Stop();
 			}
 			audioSource_.Play();
+			timeTillAudioEnd = AudioLengthInSeconds;
 		}
 
-		if (DEBUG_LOCAL)
+		if (DEBUG_GEN)
 		{
 			Debug.Log("Created pulse "+newPulseName);
 		}
@@ -130,6 +138,30 @@ public class PulseGenerator : MonoBehaviour
 	}
 			
 #endregion Pulse
-			
+
+	public float audioLengthInBeats = 1f;
+	public float AudioLengthInSeconds
+	{
+		get { return audioLengthInBeats * TempoManager.Instance.BeatLengthSeconds;  } 
+	}
+
+	public float timeTillAudioEnd = 0f;
+
+	public void Update()
+	{
+		if (timeTillAudioEnd > 0f)
+		{
+			timeTillAudioEnd -= Time.deltaTime;
+			if (timeTillAudioEnd <= 0f)
+			{
+				audioSource_.Stop();
+			}
+		}
+	}
+
+	public void OnClickedHandler(RaycastHit hit)
+	{
+		Debug.Log("Clicked on " + gameObject.name);
+	}
 
 }

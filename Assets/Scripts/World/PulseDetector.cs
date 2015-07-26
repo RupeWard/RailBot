@@ -4,7 +4,8 @@ using System.Collections;
 [RequireComponent (typeof(Collider))]
 public class PulseDetector : MonoBehaviour 
 {
-	static private readonly bool DEBUG_LOCAL = true;
+//	static private readonly bool DEBUG_LOCAL = true;
+	static private readonly bool DEBUG_PULSE = false;
 
 #region inspector hooks
 
@@ -53,7 +54,7 @@ public class PulseDetector : MonoBehaviour
 		{
 			if (!pulse.ShouldIgnoreCollider(this.gameObject))
 			{
-				if (DEBUG_LOCAL)
+				if (DEBUG_PULSE)
 				{
 					Debug.Log(other.gameObject.name+" triggered "+this.gameObject.name);
 				}
